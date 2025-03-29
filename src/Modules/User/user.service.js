@@ -2,9 +2,11 @@ import * as dbService from "../../DB/dbService.js";
 import { UserModel } from "../../DB/Models/user.model.js";
 
 export const getProfile = async (req, res, next) => {
+  console.log(req);
   const user = await dbService.findOne({
     model: UserModel,
     filter: { _id: req.user._id },
+    options : { select : "+phoneNumberRaw"}
   });
 
   return res.status(200).json({
@@ -12,8 +14,7 @@ export const getProfile = async (req, res, next) => {
     user: {
       userName: user.userName,
       email: user.email,
-      phoneNumber: user.phoneNumber,
-      image: user.image,
+      phoneNumber: user.phoneNumberRaw,
     },
   });
 };

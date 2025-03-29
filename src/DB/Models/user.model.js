@@ -44,7 +44,7 @@ const userSchema = new Schema(
     phoneNumber: String,
     phoneNumberRaw: {
       type: String, // Store actual phone number for admin
-      select: false, // Hide it by default
+      select: true, // Hide it by default
     },
     // address: String,
     // DOB: Date,
@@ -120,6 +120,8 @@ userSchema.pre("save", function (next) {
   }
   return next();
 });
+
+
 
 userSchema.pre("findOneAndUpdate", function (next) {
   // hash password
