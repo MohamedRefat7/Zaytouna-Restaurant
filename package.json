@@ -1,0 +1,33 @@
+{
+  "name": "zaytouna-restaurant",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start:dev": "nodemon --env-file=./src/config/.env ./index.js ",
+    "start": "node ./index.js"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "chalk": "^5.4.1",
+    "cloudinary": "^2.6.0",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "express": "^4.21.2",
+    "google-auth-library": "^9.15.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.2",
+    "nanoid": "^5.1.5",
+    "nodemailer": "^6.10.0"
+  }
+}
