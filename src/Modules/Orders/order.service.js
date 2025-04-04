@@ -1,97 +1,62 @@
 import { orderModel } from "../../DB/Models/order.model.js";
-import * as dbService from "../../DB/dbService.js";
+import { CartModel } from "../../DB/Models/cart.model.js";
+import { menuModel } from "../../DB/Models/menu.model.js";
+import { clearCart } from "./order.function.js";
 
 export const addOrder = async (req, res, next) => {
-  const { items, totalPrice, paymentMethod } = req.body;
-  const customerId = req.user._id; // Assuming authentication middleware sets req.user
+  const { paymentMethod, phone } = req.body;
+  //get product from cart
+  const cart = await CartModel.findOne({ user: req.user._id });
+  const menuItems = cart.menuItems;
+  if (menuItems.length < 1)
+    return next(new Error("Cart is empty", { cause: 400 }));
 
-  const order = await dbService.create({
-    model: orderModel,
-    data: { customer: customerId, items, totalPrice, paymentMethod },
+  let orderMenuItems = [];
+  let orderPrice = 0;
+
+  for (let i = 0; i < menuItems.length; i++) {
+    const menuItem = await menuModel.findById(menuItems[i].menuItemId);
+    if (!menuItem)
+      return next(new Error("Menu item not found", { cause: 404 }));
+
+    orderMenuItems.push({
+      menuItemId: menuItem._id,
+      name: menuItem.name,
+      quantity: menuItems[i].quantity,
+      price: menuItem.price,
+      totalPrice: menuItem.price * menuItems[i].quantity,
+    });
+    orderPrice += menuItem.price * menuItems[i].quantity;
+  }
+
+  const order = await orderModel.create({
+    user: req.user._id,
+    menuItems: orderMenuItems,
+    phone,
+    paymentMethod,
+    totalPrice: orderPrice,
   });
+
+  clearCart(req.user._id);
 
   return res.status(201).json({ success: true, results: order });
 };
 
-export const getAllOrders = async (req, res, next) => {
-  let orders = await orderModel
-    .find()
-    .populate({
-      path: "customer",
-      select: "userName" + (req.user.role === "Admin" ? " phoneNumberRaw" : ""),
-    })
-    .populate("items.menuItem");
-
-  return res.status(200).json({ success: true, results: orders });
-};
-
-export const getOrderById = async (req, res, next) => {
-  const order = await orderModel
-    .findById(req.params.id)
-    .populate("items.menuItem");
-  if (!order || order.isDeleted) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Order not found." });
-  }
-  return res.status(200).json({ success: true, results: order });
-};
-
-export const updateOrder = async (req, res, next) => {
-  const { items } = req.body;
+export const cancelOrder = async (req, res, next) => {
   const order = await orderModel.findById(req.params.id);
+  if (!order) return next(new Error("Invalid Order Id!"), { cause: 400 });
 
-  if (!order || order.isDeleted) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Order not found." });
-  }
+  if (
+    order.status === "delivered" ||
+    order.status === "preparing" ||
+    order.status === "canceled"
+  )
+    return next(new Error("Can't cancel order!"), { cause: 400 });
 
-  // Users can only update pending orders
-  if (req.user.role === "User") {
-    if (order.customer.toString() !== req.user._id.toString()) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized to update this order.",
-      });
-    }
-    if (order.status !== "pending") {
-      return res.status(400).json({
-        success: false,
-        message: "You can only update a pending order.",
-      });
-    }
-  }
-
-  // Update only allowed fields (items)
-  if (items) {
-    order.items = items;
-
-    // Recalculate total price
-    let totalPrice = 0;
-    for (const item of items) {
-      totalPrice += item.price * item.quantity;
-    }
-    order.totalPrice = totalPrice;
-  }
-
+  order.status = "canceled";
   await order.save();
 
-  return res.status(200).json({ success: true, results: order });
-};
+  clearCart(order.user);
 
-export const deleteOrder = async (req, res, next) => {
-  const order = await orderModel.findById(req.params.id);
-  if (!order || order.isDeleted) {
-    return res
-      .status(404)
-      .json({ success: false, message: "Order not found." });
-  }
-
-  order.isDeleted = true;
-  await order.save();
-
-  return res
-    .status(200)
-    .json({ success: true, message: "Order deleted successfully." });
+  return res.status(200).json({ success: true, message: "Order Canceled" });
 };

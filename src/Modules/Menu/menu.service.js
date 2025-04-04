@@ -37,9 +37,13 @@ export const addMenu = async (req, res, next) => {
 };
 
 export const getMenu = async (req, res, next) => {
-  let { page } = req.query;
+  let { sort, page, keyword } = req.query;
 
-  const menuItems = await menuModel.find({ isDeleted: false }).paginate(page);
+  const menuItems = await menuModel
+    .find({ ...req.query })
+    .sort(sort)
+    .search(keyword)
+    .paginate(page);
   return res.status(200).json({ success: true, results: menuItems });
 };
 

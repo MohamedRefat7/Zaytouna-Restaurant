@@ -1,24 +1,26 @@
-import mongoose from "mongoose";
+import mongoose, { model, Schema, Types } from "mongoose";
 
-const orderSchema = new mongoose.Schema(
+const orderSchema = new Schema(
   {
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
+    user: {
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },
-    items: [
+    menuItems: [
       {
-        menuItem: {
-          type: mongoose.Schema.Types.ObjectId,
+        menuItemId: {
+          type: Types.ObjectId,
           ref: "Menu",
-          required: true,
         },
-        quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true },
+        quantity: { type: Number, min: 1 },
+        price: { type: Number },
+        name: String,
+        totalPrice: { type: Number },
       },
     ],
-    totalPrice: { type: Number, required: true },
+
+    phone: { type: String, required: true },
     status: {
       type: String,
       enum: ["pending", "preparing", "delivered", "canceled"],
@@ -26,7 +28,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["cash", "credit card"],
+      enum: ["cash", "visa"],
       required: true,
     },
     isDeleted: { type: Boolean, default: false },
@@ -34,4 +36,4 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const orderModel = mongoose.model("Order", orderSchema);
+export const orderModel = mongoose.models.Order || model("Order", orderSchema);

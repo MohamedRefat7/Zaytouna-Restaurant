@@ -10,34 +10,17 @@ const router = Router();
 router.post(
   "/addOrder",
   authentication(),
+  allowTo(["User"]),
   validation(orderValidation.createOrderSchema),
   asyncHandler(orderService.addOrder)
 );
 
-router.get(
-  "/getAllOrders",
+router.patch(
+  "/cancelOrder/:id",
   authentication(),
-  allowTo(["Admin"]),
-  asyncHandler(orderService.getAllOrders)
-);
-
-router.get(
-  "/getOrder/:id",
-  authentication(),
-  asyncHandler(orderService.getOrderById)
-);
-
-router.put(
-  "/updateOrder/:id",
-  authentication(),
-  validation(orderValidation.updateOrderSchema),
-  asyncHandler(orderService.updateOrder)
-);
-
-router.delete(
-  "/deleteOrder/:id",
-  authentication(),
-  asyncHandler(orderService.deleteOrder)
+  allowTo(["User"]),
+  validation(orderValidation.cancelOrderSchema),
+  asyncHandler(orderService.cancelOrder)
 );
 
 export default router;

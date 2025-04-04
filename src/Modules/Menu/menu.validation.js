@@ -5,6 +5,6 @@ export const createMenuSchema = Joi.object({
   description: Joi.string().max(500).trim(),
   price: Joi.number().min(0).max(10000).required(),
   category: Joi.string()
-    .valid("breakfast", "lunch", "dinner", "dessert")
+    .valid("breakfast", "lunch", "dinner", "dessert", "drinks")
     .required(),
 }).required();

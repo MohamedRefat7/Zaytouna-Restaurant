@@ -1,26 +1,15 @@
-import Joi from "joi";
+import joi from "joi";
+import { isValidObjectId } from "../../middleware/validation.middleware.js";
 
-export const createOrderSchema = Joi.object({
-  items: Joi.array()
-    .items(
-      Joi.object({
-        menuItem: Joi.string().required(),
-        quantity: Joi.number().min(1).required(),
-        price: Joi.number().min(0).required(),
-      })
-    )
-    .min(1)
-    .required(),
-  totalPrice: Joi.number().min(0).required(),
-  paymentMethod: Joi.string().valid("cash", "credit card").required(),
-}).required();
+export const createOrderSchema = joi
+  .object({
+    paymentMethod: joi.string().valid("cash", "visa").required(),
+    phone: joi.string().required(),
+  })
+  .required();
 
-export const updateOrderSchema = Joi.object({
-  status: Joi.string().valid("pending", "preparing", "delivered", "canceled"),
-  items: Joi.array().items(
-    Joi.object({
-      menuItem: Joi.string().required(),
-      quantity: Joi.number().min(1).required(),
-    })
-  ),
-});
+export const cancelOrderSchema = joi
+  .object({
+    id: joi.string().custom(isValidObjectId).required(),
+  })
+  .required();
