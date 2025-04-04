@@ -17,7 +17,7 @@ export const template = (code, name, subject) => `<!DOCTYPE html>
       overflow: hidden;
     }
     .email-header {
-      background-color: #007BFF;
+      background-color: #233866;
       color: #ffffff;
       text-align: center;
       padding: 20px;
@@ -33,11 +33,11 @@ export const template = (code, name, subject) => `<!DOCTYPE html>
     }
     .email-body h2 {
       margin-top: 0;
-      color: #007BFF;
+      color: #233866;
     }
     .activation-button {
       display: inline-block;
-      background-color: #007BFF;
+      background-color: #233866;
       color: #ffffff !important;
       text-decoration: none;
       padding: 10px 20px;
@@ -56,7 +56,7 @@ export const template = (code, name, subject) => `<!DOCTYPE html>
       color: #777777;
     }
     .email-footer a {
-      color: #007BFF;
+      color: #233866;
       text-decoration: none;
     }
   </style>
