@@ -6,7 +6,7 @@ export const getProfile = async (req, res, next) => {
   const user = await dbService.findOne({
     model: UserModel,
     filter: { _id: req.user._id },
-    options : { select : "+phoneNumberRaw"}
+    options: { select: "+phoneNumberRaw" },
   });
 
   return res.status(200).json({
@@ -34,16 +34,29 @@ export const getAllProfiles = async (req, res, next) => {
 };
 
 export const updateProfile = async (req, res, next) => {
-  const user = await dbService.findOneAndUpdate({
-    model: UserModel,
-    id: { _id: req.user._id },
-    data: req.body,
-    options: { new: true, runValidators: true },
-  });
+  try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
-  return res
-    .status(200)
-    .json({ success: true, message: "Profile Updated Successfully", user });
+    const user = await UserModel.findById(req.user._id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    Object.assign(user, req.body); // Update fields dynamically
+    await user.save(); // Hashing will be triggered
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const deleteProfile = async (req, res, next) => {

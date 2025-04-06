@@ -34,8 +34,8 @@ const menuSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    slug: { type: String, required: true, unique: true },
-    createdBy: { type: Types.ObjectId, ref: "User", required: true },
+    slug: { type: String, unique: true },
+    createdBy: { type: Types.ObjectId, ref: "User" },
   },
   {
     timestamps: true,
