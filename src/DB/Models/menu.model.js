@@ -53,7 +53,7 @@ menuSchema.virtual("orders", {
 
 menuSchema.query.paginate = async function (page) {
   page = page ? page : 1;
-  const limit = 3;
+  const limit = 6;
   const skip = (page - 1) * limit;
   //data , currentpage, totalpages, totalitems, itemsperpage, nextpage, prevpage
   const data = await this.skip(skip).limit(limit);
@@ -61,12 +61,12 @@ menuSchema.query.paginate = async function (page) {
 
   return {
     data,
-    currentPage: Number(page),
+   pagination : { currentPage: Number(page),
     totalPages: Math.ceil(items / limit),
     totalItems: items,
     itemsPerPage: data.length,
     nextPage: Number(page) + 1,
-    prevPage: page - 1,
+    prevPage: page - 1},
   };
 };
 
