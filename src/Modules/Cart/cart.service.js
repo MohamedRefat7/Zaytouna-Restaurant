@@ -9,11 +9,30 @@ export const addToCart = async (req, res, next) => {
     return next(new Error("Menu item not found", { cause: 404 }));
   }
 
-  const cart = await CartModel.findOneAndUpdate(
-    { user: req.user._id },
-    { $push: { menuItems: { menuItemId, quantity } } },
-    { new: true, upsert: true }
-  );
+  let cart = await CartModel.findOne({ user: req.user._id });
+
+  if (!cart) {
+    // If cart doesn't exist, create a new one
+    cart = await CartModel.create({
+      user: req.user._id,
+      menuItems: [{ menuItemId, quantity }],
+    });
+  } else {
+    // Check if the item already exists in the cart
+    const existingItem = cart.menuItems.find(
+      (item) => item.menuItemId.toString() === menuItemId
+    );
+
+    if (existingItem) {
+      // If exists, increase quantity
+      existingItem.quantity += Number(quantity);
+    } else {
+      // If not exists, push new item
+      cart.menuItems.push({ menuItemId, quantity });
+    }
+
+    await cart.save();
+  }
 
   return res.status(200).json({ success: true, results: cart });
 };

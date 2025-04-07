@@ -8,14 +8,36 @@ import { changeRoleMiddleware } from "./admin.middleware.js";
 const router = Router();
 
 router.get(
-  "/",
+  "/getUsers",
   authentication(),
   allowTo("Admin"),
-  asyncHandler(adminService.getUsersAndOrders)
+  asyncHandler(adminService.getUsers)
+);
+
+router.get(
+  "/getOrders",
+  authentication(),
+  allowTo("Admin"),
+  asyncHandler(adminService.getOrders)
+);
+router.get(
+  "/getOrders/:orderId",
+  authentication(),
+  allowTo("Admin"),
+  validation(adminValidation.getOrderByIdSchema),
+  asyncHandler(adminService.getOrderById)
 );
 
 router.patch(
-  "/role",
+  "/changeOrderStatus/:orderId",
+  authentication(),
+  allowTo("Admin"),
+  validation(adminValidation.changeOrderStatusSchema),
+  asyncHandler(adminService.changeOrderStatusById)
+);
+
+router.patch(
+  "/changeRole",
   authentication(),
   allowTo(["Admin"]),
   validation(adminValidation.changeRoleSchema),

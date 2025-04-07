@@ -36,4 +36,23 @@ const orderSchema = new Schema(
   { timestamps: true }
 );
 
+orderSchema.query.paginate = async function (page) {
+  page = page ? page : 1;
+  const limit = 3;
+  const skip = (page - 1) * limit;
+  //data , currentpage, totalpages, totalorders, ordersperpage, nextpage, prevpage
+  const data = await this.skip(skip).limit(limit);
+  const orders = await this.model.countDocuments();
+
+  return {
+    data,
+    currentPage: Number(page),
+    totalPages: Math.ceil(orders / limit),
+    totalOrders: orders,
+    ordersPerPage: data.length,
+    nextPage: Number(page) + 1,
+    prevPage: page - 1,
+  };
+};
+
 export const orderModel = mongoose.models.Order || model("Order", orderSchema);

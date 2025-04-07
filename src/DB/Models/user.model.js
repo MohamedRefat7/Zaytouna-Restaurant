@@ -121,8 +121,6 @@ userSchema.pre("save", function (next) {
   return next();
 });
 
-
-
 userSchema.pre("findOneAndUpdate", function (next) {
   // hash password
   if (this._update.password)
@@ -133,5 +131,37 @@ userSchema.pre("findOneAndUpdate", function (next) {
   }
   return next();
 });
+
+userSchema.query.paginate = async function (page) {
+  page = page ? page : 1;
+  const limit = 3;
+  const skip = (page - 1) * limit;
+  //data , currentpage, totalpages, totalitems, itemsperpage, nextpage, prevpage
+  const data = await this.skip(skip).limit(limit);
+  const users = await this.model.countDocuments();
+
+  return {
+    data,
+    currentPage: Number(page),
+    totalPages: Math.ceil(users / limit),
+    totalusers: users,
+    usersPerPage: data.length,
+    nextPage: Number(page) + 1,
+    prevPage: page - 1,
+  };
+};
+
+userSchema.query.search = function (keyword) {
+  if (keyword) {
+    return this.find({
+      $or: [
+        { userName: { $regex: keyword, $options: "i" } },
+        { email: { $regex: keyword, $options: "i" } },
+        { phoneNumber: { $regex: keyword, $options: "i" } },
+      ],
+    });
+  }
+  return this;
+};
 
 export const UserModel = mongoose.model.User || model("User", userSchema);
