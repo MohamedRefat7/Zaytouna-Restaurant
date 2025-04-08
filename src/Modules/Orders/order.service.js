@@ -2,6 +2,7 @@ import { orderModel } from "../../DB/Models/order.model.js";
 import { CartModel } from "../../DB/Models/cart.model.js";
 import { menuModel } from "../../DB/Models/menu.model.js";
 import { clearCart } from "./order.function.js";
+import Stripe from "stripe";
 
 export const addOrder = async (req, res, next) => {
   const { paymentMethod, phone } = req.body;
@@ -39,7 +40,32 @@ export const addOrder = async (req, res, next) => {
 
   clearCart(req.user._id);
 
-  return res.status(201).json({ success: true, results: order });
+  //payment
+  if (paymentMethod === "visa") {
+    //stripe
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: orderMenuItems.map((item) => ({
+        price_data: {
+          currency: "egp",
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+      })),
+      mode: "payment",
+      success_url: process.env.SUCCESS_URL, //from Frontend
+      cancel_url: process.env.CANCEL_URL, //from Frontend
+    });
+    return res
+      .status(200)
+      .json({ success: true, url: session.url, result: order });
+  }
+  return res.status(200).json({ success: true, results: order });
 };
 
 export const cancelOrder = async (req, res, next) => {
