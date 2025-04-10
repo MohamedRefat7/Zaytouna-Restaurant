@@ -61,12 +61,14 @@ menuSchema.query.paginate = async function (page) {
 
   return {
     data,
-   pagination : { currentPage: Number(page),
-    totalPages: Math.ceil(items / limit),
-    totalItems: items,
-    itemsPerPage: data.length,
-    nextPage: Number(page) + 1,
-    prevPage: page - 1},
+    pagination: {
+      currentPage: Number(page),
+      totalPages: Math.ceil(items / limit),
+      totalItems: items,
+      itemsPerPage: data.length,
+      nextPage: Number(page) + 1,
+      prevPage: page - 1,
+    },
   };
 };
 
