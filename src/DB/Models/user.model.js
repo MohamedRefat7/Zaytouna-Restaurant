@@ -138,7 +138,7 @@ userSchema.query.paginate = async function (page) {
   const skip = (page - 1) * limit;
   //data , currentpage, totalpages, totalitems, itemsperpage, nextpage, prevpage
   const data = await this.skip(skip).limit(limit);
-  const users = await this.model.countDocuments();
+  const users = await this.clone().countDocuments();
 
   return {
     data,

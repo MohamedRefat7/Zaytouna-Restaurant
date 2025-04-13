@@ -15,7 +15,11 @@ const checkOutSchema = new Schema(
       },
     },
     date: {
-      calender: { day: Number, month: Number, year: Number, era: String },
+      calender: { identifier: String },
+      day: Number,
+      month: Number,
+      year: Number,
+      era: String,
     },
     guests: {
       type: Number,
@@ -32,6 +36,7 @@ const checkOutSchema = new Schema(
       phone: String,
       name: String,
       prefernece: String,
+      email: String,
     },
     status: {
       type: String,

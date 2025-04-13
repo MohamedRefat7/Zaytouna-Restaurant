@@ -25,4 +25,6 @@ export const subject = {
   register: "Activate Account",
   resetPassword: "Reset Password",
   updateEmail: "Update Email",
+  delivered: "CheckOut Delivered",
+  canceled: "CheckOut Canceled",
 };

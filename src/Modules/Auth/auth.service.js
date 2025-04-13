@@ -11,6 +11,7 @@ import * as dbService from "../../DB/dbService.js";
 import { decodedToken } from "../../middleware/auth.middleware.js";
 import { tokenTypes } from "../../middleware/auth.middleware.js";
 import { CartModel } from "../../DB/Models/cart.model.js";
+
 export const register = async (req, res, next) => {
   const { userName, email, password, confirmPassword, phoneNumber } = req.body;
   if (await dbService.findOne({ model: UserModel, filter: { email } }))

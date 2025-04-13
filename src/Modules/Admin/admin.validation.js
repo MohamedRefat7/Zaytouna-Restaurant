@@ -2,6 +2,18 @@ import joi from "joi";
 import { isValidObjectId } from "../../middleware/validation.middleware.js";
 import { roleType } from "../../DB/Models/user.model.js";
 
+export const getUserByIdSchema = joi
+  .object({
+    userId: joi.custom(isValidObjectId).required(),
+  })
+  .required();
+
+export const getUserByEmailSchema = joi
+  .object({
+    email: joi.string().email().required(),
+  })
+  .required();
+
 export const changeRoleSchema = joi
   .object({
     userId: joi.custom(isValidObjectId).required(), // or Email If you want
@@ -13,17 +25,24 @@ export const changeRoleSchema = joi
   })
   .required();
 
-export const changeOrderStatusSchema = joi
+export const changeCheckOutStatusSchema = joi
   .object({
-    orderId: joi.custom(isValidObjectId).required(),
+    checkOutId: joi.custom(isValidObjectId).required(),
     status: joi
       .string()
       .valid("pending", "preparing", "delivered", "canceled")
       .required(),
   })
   .required();
-export const getOrderByIdSchema = joi
+
+export const getCheckOutByIdSchema = joi
   .object({
-    orderId: joi.custom(isValidObjectId).required(),
+    checkOutId: joi.custom(isValidObjectId).required(),
+  })
+  .required();
+
+export const deleteUserSchema = joi
+  .object({
+    userId: joi.custom(isValidObjectId).required(),
   })
   .required();

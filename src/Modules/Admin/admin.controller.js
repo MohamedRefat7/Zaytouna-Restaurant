@@ -15,25 +15,49 @@ router.get(
 );
 
 router.get(
-  "/getOrders",
+  "/getUser/:userId",
   authentication(),
   allowTo("Admin"),
-  asyncHandler(adminService.getOrders)
+  validation(adminValidation.getUserByIdSchema),
+  asyncHandler(adminService.getUserById)
 );
+
 router.get(
-  "/getOrders/:orderId",
+  "/getUserByEmail",
   authentication(),
   allowTo("Admin"),
-  validation(adminValidation.getOrderByIdSchema),
-  asyncHandler(adminService.getOrderById)
+  validation(adminValidation.getUserByEmailSchema),
+  asyncHandler(adminService.getUserByEmail)
+);
+
+router.get(
+  "/getAdmins",
+  authentication(),
+  allowTo("Admin"),
+  asyncHandler(adminService.getAdmins)
+);
+
+router.get(
+  "/getCheckOut",
+  authentication(),
+  allowTo("Admin"),
+  asyncHandler(adminService.getCheckOut)
+);
+
+router.get(
+  "/getCheckOut/:checkOutId",
+  authentication(),
+  allowTo("Admin"),
+  validation(adminValidation.getCheckOutByIdSchema),
+  asyncHandler(adminService.getCheckOutById)
 );
 
 router.patch(
-  "/changeOrderStatus/:orderId",
+  "/changeCheckOutStatus/:checkOutId",
   authentication(),
   allowTo("Admin"),
-  validation(adminValidation.changeOrderStatusSchema),
-  asyncHandler(adminService.changeOrderStatusById)
+  validation(adminValidation.changeCheckOutStatusSchema),
+  asyncHandler(adminService.changeCheckOutStatusById)
 );
 
 router.patch(
@@ -43,6 +67,15 @@ router.patch(
   validation(adminValidation.changeRoleSchema),
   changeRoleMiddleware,
   asyncHandler(adminService.changeRole)
+);
+
+//delete user
+router.delete(
+  "/deleteUser/:userId",
+  authentication(),
+  allowTo("Admin"),
+  validation(adminValidation.deleteUserSchema),
+  asyncHandler(adminService.deleteUser)
 );
 
 export default router;

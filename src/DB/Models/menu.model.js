@@ -53,11 +53,11 @@ menuSchema.virtual("orders", {
 
 menuSchema.query.paginate = async function (page) {
   page = page ? page : 1;
-  const limit = 6;
+  const limit = 3;
   const skip = (page - 1) * limit;
   //data , currentpage, totalpages, totalitems, itemsperpage, nextpage, prevpage
+  const items = await this.clone().countDocuments();
   const data = await this.skip(skip).limit(limit);
-  const items = await this.model.countDocuments();
 
   return {
     data,
@@ -74,7 +74,7 @@ menuSchema.query.paginate = async function (page) {
 
 menuSchema.query.search = function (keyword) {
   if (keyword) {
-    return this.find({
+    return this.where({
       $or: [
         { name: { $regex: keyword, $options: "i" } },
         { description: { $regex: keyword, $options: "i" } },

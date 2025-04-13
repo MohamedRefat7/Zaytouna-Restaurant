@@ -36,7 +36,7 @@ export const addMenu = async (req, res, next) => {
   }
 };
 
-export const getMenu = async (req, res, next) => {
+/* export const getMenu = async (req, res, next) => {
   let { sort, page, keyword } = req.query;
 
   const menuItems = await menuModel
@@ -44,6 +44,22 @@ export const getMenu = async (req, res, next) => {
     .sort(sort)
     .search(keyword)
     .paginate(page);
+  return res.status(200).json({ success: true, results: menuItems });
+}; */
+
+export const getMenu = async (req, res, next) => {
+  let { sort, page, keyword, category, isDeleted } = req.query;
+
+  const filter = {};
+  if (category) filter.category = category;
+  if (isDeleted === undefined) filter.isDeleted = false;
+
+  const menuItems = await menuModel
+    .find(filter)
+    .sort(sort)
+    .search(keyword)
+    .paginate(page);
+
   return res.status(200).json({ success: true, results: menuItems });
 };
 

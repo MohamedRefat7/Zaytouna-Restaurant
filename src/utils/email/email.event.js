@@ -29,3 +29,11 @@ emailEmitter.on("forgetPassword", async (email, userName) => {
     html: template(otp, userName, subject.resetPassword),
   });
 });
+
+emailEmitter.on("sendStatusUpdateEmail", async (email, userName, status) => {
+  await sendEmails({
+    to: email,
+    subject: subject[status],
+    html: template(userName, userName, subject[status]),
+  });
+});
