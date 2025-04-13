@@ -29,4 +29,5 @@ router.delete(
   validation(checkOutValidation.cancelCheckOutValidation),
   asyncHandler(checkOutService.cancelCheckOut)
 );
+
 export default router;

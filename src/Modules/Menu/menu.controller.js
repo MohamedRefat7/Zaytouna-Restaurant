@@ -17,6 +17,7 @@ router.post(
 );
 
 router.get("/getMenu", authentication(), asyncHandler(menuService.getMenu));
+router.get("/getMenuStatic", asyncHandler(menuService.getMenu));
 router.get(
   "/getMenuItem/:id",
   authentication(),

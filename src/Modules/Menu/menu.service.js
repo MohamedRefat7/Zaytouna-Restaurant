@@ -36,18 +36,25 @@ export const addMenu = async (req, res, next) => {
   }
 };
 
-/* export const getMenu = async (req, res, next) => {
-  let { sort, page, keyword } = req.query;
+export const getMenu = async (req, res, next) => {
+  let { sort, keyword } = req.query;
+
+  // Build query
+  const query = { ...req.query };
+
+  // Remove special parameters from the query
+  delete query.sort;
+  delete query.keyword;
 
   const menuItems = await menuModel
     .find({ ...req.query })
     .sort(sort)
-    .search(keyword)
-    .paginate(page);
+    .search(keyword);
+  console.log("Found menu items:", menuItems.length); // Debug log
   return res.status(200).json({ success: true, results: menuItems });
-}; */
+};
 
-export const getMenu = async (req, res, next) => {
+/* export const getMenu = async (req, res, next) => {
   let { sort, page, keyword, category, isDeleted } = req.query;
 
   const filter = {};
@@ -61,7 +68,7 @@ export const getMenu = async (req, res, next) => {
     .paginate(page);
 
   return res.status(200).json({ success: true, results: menuItems });
-};
+}; */
 
 export const getMenuById = async (req, res, next) => {
   const menuItem = await menuModel.findById(req.params.id);
@@ -130,8 +137,7 @@ export const deleteMenu = async (req, res, next) => {
     await cloudinary.uploader.destroy(menu.image.public_id);
   }
 
-  menu.isDeleted = true;
-  await menu.save();
+  await menuModel.findByIdAndDelete(req.params.id);
 
   return res
     .status(200)

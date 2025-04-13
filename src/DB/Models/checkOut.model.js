@@ -15,7 +15,7 @@ const checkOutSchema = new Schema(
       },
     },
     date: {
-      calender: { identifier: String },
+      calendar: { identifier: String },
       day: Number,
       month: Number,
       year: Number,
@@ -35,7 +35,7 @@ const checkOutSchema = new Schema(
       message: String,
       phone: String,
       name: String,
-      prefernece: String,
+      preference: String,
       email: String,
     },
     status: {
@@ -49,7 +49,7 @@ const checkOutSchema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["cash", "visa"],
+      enum: ["cash", "creditCard"],
     },
     time: {
       type: String,
@@ -57,6 +57,5 @@ const checkOutSchema = new Schema(
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
-
 export const CheckOutModel =
   mongoose.models.CheckOut || model("CheckOut", checkOutSchema);

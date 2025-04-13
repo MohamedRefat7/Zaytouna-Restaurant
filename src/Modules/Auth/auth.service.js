@@ -72,13 +72,13 @@ export const login = async (req, res, next) => {
 
   // check if user exist
   const user = await dbService.findOne({ model: UserModel, filter: { email } });
-  if (!user) return next(new Error("User not found", { cause: 404 }));
+  if (!user) return next(new Error("Invalid UserName or Password", { cause: 404 }));
 
   if (!user.confirmEmail)
     return next(new Error("User not confirmed", { cause: 400 }));
 
   if (!compareHash({ plainText: password, hash: user.password }))
-    return next(new Error("Invalid password", { cause: 400 }));
+    return next(new Error("Invalid UserName or Password", { cause: 400 }));
 
   // generate token
   const access_token = generateToken({

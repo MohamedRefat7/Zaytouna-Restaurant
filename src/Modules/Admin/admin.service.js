@@ -11,12 +11,9 @@ import {
 export const getUsers = async (req, res, next) => {
   let { page, keyword } = req.query;
 
-  const results = await UserModel.find({ role: "User" })
-    .search(keyword)
-    .paginate(page);
+  const results = await UserModel.find({ role: "User" }).search(keyword);
 
-  if (!results || results.length === 0)
-    return next(new Error("No users found", { cause: 404 }));
+  if (!results) return next(new Error("No users found", { cause: 404 }));
 
   return res.status(200).json({ success: true, results });
 };
@@ -121,31 +118,6 @@ export const changeCheckOutStatusById = async (req, res, next) => {
 
   return res.status(200).json({ success: true, checkOut });
 };
-
-//send on whatsapp
-/* export const changeCheckOutStatusById = async (req, res, next) => {
-  const { checkOutId } = req.params;
-  const { status } = req.body;
-
-  const checkOut = await dbservice.findOneAndUpdate({
-    model: CheckOutModel,
-    filter: { _id: checkOutId, isDeleted: false },
-    data: { status },
-    options: { new: true },
-  });
-
-  if (!checkOut)
-    return next(new Error("checkOut not found Or Is Deleted", { cause: 404 }));
-
-  if (status === "delivered" || status === "canceled") {
-    const message = `Hello, your checkout with ID ${checkOutId} has been ${status}.`;
-    // // Send SMS message to the user
-    const formattedPhoneNumber = `+20${checkOut.info.phone.slice(1)}`; // Assuming it's an Egyptian number
-    await sendSMSMessage(formattedPhoneNumber, message);
-  }
-
-  return res.status(200).json({ success: true, checkOut });
-}; */
 
 export const changeRole = async (req, res, next) => {
   // change role

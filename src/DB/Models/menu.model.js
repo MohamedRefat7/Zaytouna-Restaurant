@@ -34,7 +34,7 @@ const menuSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    slug: { type: String, unique: true },
+
     createdBy: { type: Types.ObjectId, ref: "User" },
   },
   {
@@ -50,27 +50,6 @@ menuSchema.virtual("orders", {
   localField: "_id",
   foreignField: "menu",
 });
-
-menuSchema.query.paginate = async function (page) {
-  page = page ? page : 1;
-  const limit = 3;
-  const skip = (page - 1) * limit;
-  //data , currentpage, totalpages, totalitems, itemsperpage, nextpage, prevpage
-  const items = await this.clone().countDocuments();
-  const data = await this.skip(skip).limit(limit);
-
-  return {
-    data,
-    pagination: {
-      currentPage: Number(page),
-      totalPages: Math.ceil(items / limit),
-      totalItems: items,
-      itemsPerPage: data.length,
-      nextPage: Number(page) + 1,
-      prevPage: page - 1,
-    },
-  };
-};
 
 menuSchema.query.search = function (keyword) {
   if (keyword) {
