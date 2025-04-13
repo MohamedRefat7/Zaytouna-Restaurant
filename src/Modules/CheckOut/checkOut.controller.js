@@ -22,4 +22,13 @@ router.get(
   asyncHandler(checkOutService.getCheckOut)
 );
 
+
+router.delete(
+  "/cancelCheckOut/:id",
+  authentication(),
+  allowTo(["User"]),
+  validation(checkOutValidation.cancelCheckOutValidation),
+  asyncHandler(checkOutService.cancelCheckOut)
+);
+
 export default router;

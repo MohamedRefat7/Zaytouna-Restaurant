@@ -5,7 +5,7 @@ export const getUsers = async (req, res, next) => {
   let { page, keyword } = req.query;
 
   const results = await Promise.all([
-    UserModel.find({}).search(keyword).paginate(page),
+    UserModel.find({}).search(keyword),
   ]);
   if (!results) return next(new Error("No users found", { cause: 404 }));
 
@@ -15,7 +15,7 @@ export const getUsers = async (req, res, next) => {
 export const getOrders = async (req, res, next) => {
   let { page } = req.query;
 
-  const results = await Promise.all([orderModel.find({}).paginate(page)]);
+  const results = await Promise.all([orderModel.find({})]);
 
   if (!results) return next(new Error("No orders found", { cause: 404 }));
 
