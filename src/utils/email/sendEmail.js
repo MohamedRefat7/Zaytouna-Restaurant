@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 export const sendEmails = async ({ to, subject, html }) => {
   // sender
-  const trasporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: "gmail",
     port: 465,
     secure: true,
@@ -12,8 +12,8 @@ export const sendEmails = async ({ to, subject, html }) => {
   });
   // recivier
 
-  const info = await trasporter.sendMail({
-    from: `"Zaytouna Restaurant" <${process.env.EMAIL}>`,
+  const info = await transporter.sendMail({
+    from: `"Zaytona Restaurant" <${process.env.EMAIL}>`,
     to, // single email
     subject,
     html,

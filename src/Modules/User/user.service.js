@@ -1,4 +1,5 @@
 import * as dbService from "../../DB/dbService.js";
+import { CheckOutModel } from "../../DB/Models/checkOut.model.js";
 import { UserModel } from "../../DB/Models/user.model.js";
 
 export const getProfile = async (req, res, next) => {
@@ -64,7 +65,9 @@ export const deleteProfile = async (req, res, next) => {
     model: UserModel,
     id: req.user._id,
   });
-
+  await CheckOutModel.deleteMany({
+    createdBy : req.user._id
+  })
   if (!user) {
     return res.status(404).json({ success: false, message: "User not found" });
   }

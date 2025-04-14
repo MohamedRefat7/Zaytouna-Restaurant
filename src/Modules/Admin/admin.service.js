@@ -2,14 +2,13 @@ import { UserModel } from "../../DB/Models/user.model.js";
 import { orderModel } from "../../DB/Models/order.model.js";
 import { CheckOutModel } from "../../DB/Models/checkOut.model.js";
 import * as dbservice from "../../DB/dbService.js";
-import { emailEmitter } from "../../utils/email/email.event.js";
+// import { emailEmitter } from "../../utils/email/email.event.js";
 import {
-  sendSMSMessage,
   sendWhatsAppMessage,
 } from "../../utils/twilio/twilio.js";
 
 export const getUsers = async (req, res, next) => {
-  let { page, keyword } = req.query;
+  let { keyword } = req.query;
 
   const results = await UserModel.find({ role: "User" }).search(keyword);
 
@@ -47,11 +46,10 @@ export const getUserByEmail = async (req, res, next) => {
 };
 
 export const getAdmins = async (req, res, next) => {
-  let { page, keyword } = req.query;
+  let {keyword } = req.query;
 
   const results = await UserModel.find({ role: "Admin" })
     .search(keyword)
-    .paginate(page);
 
   if (!results || results.length === 0)
     return next(new Error("No admins found", { cause: 404 }));
@@ -60,7 +58,7 @@ export const getAdmins = async (req, res, next) => {
 };
 
 export const getCheckOut = async (req, res, next) => {
-  const results = await CheckOutModel.find({});
+  const results = await CheckOutModel.find({}).populate({path:"createdBy",select : "userName phoneNumberRaw email"});
 
   if (!results) return next(new Error("No CheckOut found", { cause: 404 }));
 
@@ -73,7 +71,7 @@ export const getCheckOutById = async (req, res, next) => {
   const checkOut = await dbservice.findById({
     model: CheckOutModel,
     id: { _id: checkOutId },
-  });
+  }).populate({path:"createdBy",select : "userName phoneNumberRaw email"});
 
   if (!checkOut)
     return next(
@@ -101,18 +99,13 @@ export const changeCheckOutStatusById = async (req, res, next) => {
   if (status === "delivered" || status === "canceled") {
     const userEmail = checkOut.info.email;
     const userName = checkOut.info.name;
-
-    // Emit event to send email
-    emailEmitter.emit("sendStatusUpdateEmail", userEmail, userName, status);
-
-    const message = `Hello, your checkout with ID ${checkOutId} has been ${status}.`;
+    // emailEmitter.emit("sendStatusUpdateEmail",userName , userEmail , status)
     // // Send SMS message to the user
     const formattedPhoneNumber = `+20${checkOut.info.phone.slice(1)}`; // Assuming it's an Egyptian number
-    await sendSMSMessage(formattedPhoneNumber, message);
     // send message by whatsapp
     await sendWhatsAppMessage(
       formattedPhoneNumber,
-      `Hello ${userName}, your checkout with Date ${checkOut.date.day}/${checkOut.date.month}/${checkOut.date.year} in Time ${checkOut.time} has been ${status}.`
+      `Zaytona Restaurant 🍽\nHello ${userName} 🥰,\n your checkout with \n Date ${checkOut.date.day}/${checkOut.date.month}/${checkOut.date.year} in Time ${checkOut.time} ⏰ \n has been ${status}.`
     );
   }
 
@@ -163,6 +156,9 @@ export const deleteUser = async (req, res, next) => {
     id: { _id: userId },
     options: { new: true },
   });
+  await CheckOutModel.deleteMany({
+    createdBy:userId
+  })
 
   return res.status(200).json({ success: true, message: "User deleted" });
 };

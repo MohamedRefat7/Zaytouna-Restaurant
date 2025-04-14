@@ -57,7 +57,6 @@ export const addCheckOutValidation = Joi.object({
           price: Joi.number().required(),
         })
       )
-      .min(1)
       .optional(), // Cart items are optional, but if provided, must have at least one item
     preOrder: Joi.boolean().optional(),
   }),
