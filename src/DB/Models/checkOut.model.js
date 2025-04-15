@@ -14,13 +14,14 @@ const checkOutSchema = new Schema(
         default: false,
       },
     },
-    date: {
-      calendar: { identifier: String },
-      day: Number,
-      month: Number,
-      year: Number,
-      era: String,
-    },
+    // date: {
+    //   calendar: { identifier: String },
+    //   day: Number,
+    //   month: Number,
+    //   year: Number,
+    //   era: String,
+    // },
+    date: String,
     guests: {
       type: Number,
       default: 1,

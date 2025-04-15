@@ -43,15 +43,16 @@ export const addCheckOut = async (req, res, next) => {
         })),
         preOrder: modifiedCart.preOrder || false,
       },
-      date: {
-        calendar: {
-          identifier: date?.calendar?.identifier,
-        },
-        day: date?.calendar?.day || new Date().getDate(),
-        month: date?.calendar?.month || new Date().getMonth() + 1,
-        year: date?.calendar?.year || new Date().getFullYear(),
-        era: date?.calendar?.era || "AD",
-      },
+      // date: {
+      //   calendar: {
+      //     identifier: date?.calendar?.identifier,
+      //   },
+      //   day: date?.calendar?.day || new Date().getDate(),
+      //   month: date?.calendar?.month || new Date().getMonth() + 1,
+      //   year: date?.calendar?.year || new Date().getFullYear(),
+      //   era: date?.calendar?.era || "AD",
+      // },
+      date,
       guests: guests || 1,
       time,
       status: status || "pending",
@@ -61,8 +62,8 @@ export const addCheckOut = async (req, res, next) => {
       info: {
         name: info?.name?.trim() || user.userName,
         phone: user.phoneNumberRaw,
-        message: info?.message || "",
-        preference: info?.preference || "",
+        message: info?.message || "No Notes",
+        preference: info?.preference || "No Preference",
         email: info?.email || user.email,
       },
       createdBy: userId,

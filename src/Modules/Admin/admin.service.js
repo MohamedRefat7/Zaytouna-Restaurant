@@ -65,18 +65,36 @@ export const getCheckOut = async (req, res, next) => {
   return res.status(200).json({ success: true, results });
 };
 
+// export const getCheckOutById = async (req, res, next) => {
+//   const { checkOutId } = req.params;
+
+//   const checkOut = await dbservice.findById({
+//     model: CheckOutModel,
+//     id: { _id: checkOutId },
+//   })
+//   // .populate({path:"createdBy",select : "userName phoneNumberRaw email"});
+
+//   if (!checkOut)
+//     return next(
+//       new Error("CheckOut not found Or Id Is Not valid", { cause: 404 })
+//     );
+
+//   return res.status(200).json({ success: true, checkOut });
+// };
+
 export const getCheckOutById = async (req, res, next) => {
   const { checkOutId } = req.params;
 
-  const checkOut = await dbservice.findById({
-    model: CheckOutModel,
-    id: { _id: checkOutId },
-  }).populate({path:"createdBy",select : "userName phoneNumberRaw email"});
+  const checkOut = await CheckOutModel.findById(checkOutId)
+    .populate({path:"createdBy", select: "userName phoneNumberRaw email"})
+    .populate({
+      path: "cart.items.menu",
+      select: "name price"
+    });
 
-  if (!checkOut)
-    return next(
-      new Error("CheckOut not found Or Id Is Not valid", { cause: 404 })
-    );
+  if (!checkOut) {
+    return next(new Error("CheckOut not found Or Id Is Not valid", { cause: 404 }));
+  }
 
   return res.status(200).json({ success: true, checkOut });
 };
