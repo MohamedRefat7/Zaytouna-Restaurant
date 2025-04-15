@@ -17,7 +17,6 @@ export const getUserByEmailSchema = joi
 export const changeRoleSchema = joi
   .object({
     userId: joi.custom(isValidObjectId).required(), // or Email If you want
-    // userEmail: joi.string().email().required(),
     role: joi
       .string()
       .valid(...Object.values(roleType))

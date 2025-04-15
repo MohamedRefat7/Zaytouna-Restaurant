@@ -43,15 +43,6 @@ export const addCheckOut = async (req, res, next) => {
         })),
         preOrder: modifiedCart.preOrder || false,
       },
-      // date: {
-      //   calendar: {
-      //     identifier: date?.calendar?.identifier,
-      //   },
-      //   day: date?.calendar?.day || new Date().getDate(),
-      //   month: date?.calendar?.month || new Date().getMonth() + 1,
-      //   year: date?.calendar?.year || new Date().getFullYear(),
-      //   era: date?.calendar?.era || "AD",
-      // },
       date,
       guests: guests || 1,
       time,
@@ -180,28 +171,3 @@ export const cancelCheckOut = async (req, res, next) => {
     });
   }
 };
-
-// delete checkOut if status is pending
-// export const cancelCheckOut = async (req, res, next) => {
-//   try {
-//     const checkOut = await CheckOutModel.findById(req.params.id);
-//     if (!checkOut) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "CheckOut not found" });
-//     }
-//     if (checkOut.status !== "pending") {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "CheckOut cannot be cancelled" });
-//     }
-//     checkOut.status = "cancelled";
-//     await CheckOutModel.findByIdAndDelete(req.params.id);
-//     return res
-//       .status(200)
-//       .json({ success: true, message: "CheckOut cancelled successfully" });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({ success: false, error: error.message });
-//   }
-// };

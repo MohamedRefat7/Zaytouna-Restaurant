@@ -54,22 +54,6 @@ export const getMenu = async (req, res, next) => {
   return res.status(200).json({ success: true, results: menuItems });
 };
 
-/* export const getMenu = async (req, res, next) => {
-  let { sort, page, keyword, category, isDeleted } = req.query;
-
-  const filter = {};
-  if (category) filter.category = category;
-  if (isDeleted === undefined) filter.isDeleted = false;
-
-  const menuItems = await menuModel
-    .find(filter)
-    .sort(sort)
-    .search(keyword)
-    .paginate(page);
-
-  return res.status(200).json({ success: true, results: menuItems });
-}; */
-
 export const getMenuById = async (req, res, next) => {
   const menuItem = await menuModel.findById(req.params.id);
   if (!menuItem || menuItem.isDeleted) {
