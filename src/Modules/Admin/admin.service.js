@@ -109,7 +109,7 @@ export const changeCheckOutStatusById = async (req, res, next) => {
     // send message by whatsapp
     await sendWhatsAppMessage(
       formattedPhoneNumber,
-      `Zaytona Restaurant 🍽\nHello ${userName || checkOut.createdBy.userName} 🥰,\n your checkout with \n Date ${checkOut.date.day}/${checkOut.date.month}/${checkOut.date.year} in Time ${checkOut.time} ⏰ \n has been ${status}.`
+      `Zaytona Restaurant 🍽\nHello ${userName || checkOut.createdBy.userName} 🥰,\n your checkout with \n Date ${checkOut.date} in Time ${checkOut.time} ⏰ \n has been ${status}.`
     );
   }
 
