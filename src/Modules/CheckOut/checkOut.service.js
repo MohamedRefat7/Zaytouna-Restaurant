@@ -123,8 +123,9 @@ export const getCheckOut = async (req, res, next) => {
       .populate({path:"createdBy",select : "userName phoneNumberRaw"}) // Make sure your schema ref is correct
       .sort({ createdAt: -1 });
 
-
-    if (!checkOuts || checkOuts.length === 0) {
+      if(checkOuts.length === 0) return res.status(200).json({ success: true, message: "checkout is empty" })
+        
+    if (!checkOuts) {
       return res
         .status(404)
         .json({ success: false, message: "No checkouts found for this user" });

@@ -93,7 +93,9 @@ export const changeCheckOutStatusById = async (req, res, next) => {
     filter: { _id: checkOutId, isDeleted: false },
     data: { status },
     options: { new: true },
+    populate: { path: "createdBy", select: "userName phoneNumberRaw email" },
   });
+
 
   if (!checkOut)
     return next(new Error("checkOut not found Or Is Deleted", { cause: 404 }));
@@ -103,11 +105,11 @@ export const changeCheckOutStatusById = async (req, res, next) => {
     const userName = checkOut.info.name;
     // emailEmitter.emit("sendStatusUpdateEmail",userName , userEmail , status)
     // // Send SMS message to the user
-    const formattedPhoneNumber = `+20${checkOut.info.phone.slice(1)}`; // Assuming it's an Egyptian number
+    const formattedPhoneNumber = `+20${checkOut.info.phone.slice(1)}` || `+20${checkOut.createdBy.phoneNumberRaw.slice(1)}`; // Assuming it's an Egyptian number
     // send message by whatsapp
     await sendWhatsAppMessage(
       formattedPhoneNumber,
-      `Zaytona Restaurant 🍽\nHello ${userName} 🥰,\n your checkout with \n Date ${checkOut.date.day}/${checkOut.date.month}/${checkOut.date.year} in Time ${checkOut.time} ⏰ \n has been ${status}.`
+      `Zaytona Restaurant 🍽\nHello ${userName || checkOut.createdBy.userName} 🥰,\n your checkout with \n Date ${checkOut.date.day}/${checkOut.date.month}/${checkOut.date.year} in Time ${checkOut.time} ⏰ \n has been ${status}.`
     );
   }
 
